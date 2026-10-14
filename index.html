@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#14111c">
+<meta name="description" content="Quatre cavaliers mènent la ronde sur le front d'une Grande Guerre qui n'en finit pas. Tactique au tour par tour.">
+<meta property="og:title" content="Les 4 cavaliers">
+<meta property="og:image" content="og.png">
+<title>Les 4 cavaliers</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="js/lib/game.css?v=0.1.0">
+<link rel="stylesheet" href="css/style.css?v=0.1.0">
+</head>
+<body>
+<div class="jeu-ecran" id="ecran">
+  <div class="scene" id="scene"></div>
+
+  <!-- L'interface, posée sur l'espace logique 640 × 360 (--u = pixels CSS par pixel logique) -->
+  <div class="interface" id="interface" hidden>
+    <header class="bandeau">
+      <span class="lieu" id="lieu"></span>
+      <span class="compteur" id="sablier"></span>
+      <span class="compteur" id="ames"></span>
+      <button class="icone" id="pause" aria-label="Pause">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>
+      </button>
+    </header>
+    <nav class="cavaliers" id="cavaliers" aria-label="Cavaliers"></nav>
+    <aside class="fiche" id="fiche" aria-live="polite"></aside>
+    <footer class="pied">
+      <button class="bouton" id="recommencer">Recommencer le tour <kbd>R</kbd></button>
+      <p class="message" id="message" role="status"></p>
+      <button class="bouton fort" id="finir">Fin du tour <kbd>F</kbd></button>
+    </footer>
+  </div>
+
+  <!-- Écran titre : pas de sous-titre (section 3) -->
+  <section class="titre" id="titre">
+    <h1>Les 4 cavaliers</h1>
+    <div class="frise" id="frise" aria-hidden="true"></div>
+    <nav class="titre-menu">
+      <button class="bouton" id="continuer" hidden>Continuer</button>
+      <button class="bouton" id="nouvelle">Nouvelle partie</button>
+    </nav>
+    <p class="record" id="record" hidden></p>
+    <button class="icone titre-reglages" id="ouvrir-reglages" aria-label="Réglages">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 4.3c.4-1.8 2.9-1.8 3.4 0a1.7 1.7 0 0 0 2.6 1.1c1.5-.9 3.3.8 2.4 2.4a1.7 1.7 0 0 0 1 2.5c1.8.5 1.8 3 0 3.4a1.7 1.7 0 0 0-1 2.6c.9 1.5-.9 3.3-2.4 2.4a1.7 1.7 0 0 0-2.6 1c-.5 1.8-3 1.8-3.4 0a1.7 1.7 0 0 0-2.5-1c-1.6.9-3.3-.9-2.4-2.4a1.7 1.7 0 0 0-1.1-2.6c-1.8-.4-1.8-2.9 0-3.4a1.7 1.7 0 0 0 1.1-2.5c-.9-1.6.8-3.3 2.4-2.4 1 .6 2.3.1 2.5-1.1z"/><circle cx="12" cy="12" r="3"/></svg>
+    </button>
+  </section>
+</div>
+
+<!-- Les boîtes de dialogue sont rattachées au body (section 17) -->
+<dialog id="dialogue-pause" aria-label="Pause">
+  <h2>Pause</h2>
+  <div class="menu">
+    <button class="bouton" id="reprendre">Reprendre</button>
+    <button class="bouton" id="pause-reglages">Réglages</button>
+    <button class="bouton" id="plein-ecran">Plein écran</button>
+    <button class="bouton" id="quitter">Écran titre</button>
+  </div>
+</dialog>
+
+<dialog id="dialogue-reglages" aria-label="Réglages">
+  <h2>Réglages</h2>
+  <label class="curseur">Musique <input type="range" id="vol-musique" min="0" max="100" step="10"></label>
+  <label class="curseur">Effets <input type="range" id="vol-effets" min="0" max="100" step="10"></label>
+  <hr>
+  <p class="version" id="version">v…</p>
+  <details>
+    <summary>Dernières versions</summary>
+    <div id="changelog"></div>
+  </details>
+  <div class="menu">
+    <button class="bouton" id="exporter">Exporter la sauvegarde</button>
+    <button class="bouton" id="importer">Importer une sauvegarde</button>
+  </div>
+  <p class="liens"><a href="labo.html">Labo</a> · <a href="atelier.html">Atelier</a></p>
+  <form method="dialog"><button class="bouton">Fermer</button></form>
+</dialog>
+
+<dialog id="dialogue-confirmer" aria-label="Confirmer">
+  <p>Une danse est en cours. La remplacer ?</p>
+  <form method="dialog" class="menu">
+    <button class="bouton" value="oui">Nouvelle partie</button>
+    <button class="bouton" value="non">Annuler</button>
+  </form>
+</dialog>
+
+<dialog id="dialogue-bilan" aria-labelledby="bilan-titre">
+  <h2 id="bilan-titre"></h2>
+  <p class="bilan-chiffres" id="bilan-chiffres"></p>
+  <p class="memento" id="bilan-memento"></p>
+  <div class="menu" id="bilan-actions"></div>
+</dialog>
+
+<div class="jeu-toast" id="toast" role="status" hidden></div>
+<script src="vendor/phaser.min.js?v=0.1.0"></script>
+<script type="module" src="js/main.js?v=0.1.0"></script>
+</body>
+</html>

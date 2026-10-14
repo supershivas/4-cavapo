@@ -1,0 +1,117 @@
+/* L'habillage du jeu. Les couleurs viennent de js/palette.js (posées en
+   variables --jeu-* par main.js au lancement) : aucune valeur de couleur ici.
+   L'interface en jeu est posée sur l'espace logique 640 × 360 : --u est le
+   nombre de pixels CSS par pixel logique (posé par main.js), et toutes ses
+   mesures en sont des multiples. */
+
+:root {
+  --jeu-cible: 44px;
+  --jeu-police: Georgia, 'Times New Roman', serif;   /* police système : aucune police chargée */
+  --mono: ui-monospace, 'DejaVu Sans Mono', monospace;
+  --pas: 8px;                                          /* hors jeu : multiples de --pas */
+  --u: 2px;                                            /* en jeu : un pixel logique */
+  --t-texte: calc(var(--u) * 8);
+  --t-petit: calc(var(--u) * 7);
+  --t-titre: calc(var(--u) * 10);
+  --duree: 160ms;
+}
+
+.scene { position: absolute; inset: 0; }
+
+/* ─── En jeu ──────────────────────────────────────────────────────────────── */
+.interface { position: absolute; font-size: var(--t-texte); line-height: 1.25; color: var(--jeu-encre); pointer-events: none; }
+.interface[hidden] { display: none; }
+.interface > * { position: absolute; pointer-events: auto; }
+.interface kbd { font-family: var(--mono); font-size: var(--t-petit); color: var(--jeu-accent); }
+
+.bandeau { left: calc(var(--u) * 8); right: calc(var(--u) * 8); top: calc(var(--u) * 4); height: calc(var(--u) * 34); display: flex; align-items: center; gap: calc(var(--u) * 16); }
+.lieu { font-size: var(--t-titre); letter-spacing: .04em; color: var(--jeu-fort); min-width: calc(var(--u) * 200); }
+.compteur { font-family: var(--mono); font-size: var(--t-texte); }
+.compteur b { color: var(--jeu-fort); font-weight: normal; }
+.compteur.plein b { color: var(--jeu-accent); }
+.bandeau .icone { margin-left: auto; }
+
+.cavaliers { left: calc(var(--u) * 8); top: calc(var(--u) * 44); width: calc(var(--u) * 124); display: grid; gap: calc(var(--u) * 4); }
+.carte {
+  display: grid; grid-template-columns: calc(var(--u) * 24) 1fr; grid-template-rows: auto auto; column-gap: calc(var(--u) * 6);
+  align-items: center; text-align: left;
+  height: calc(var(--u) * 63); padding: calc(var(--u) * 4) calc(var(--u) * 6);
+  background: var(--jeu-panneau); color: var(--jeu-encre);
+  border: var(--u) solid var(--jeu-panneau); font: inherit; font-size: var(--t-petit); cursor: pointer;
+}
+.carte canvas { grid-row: span 2; width: calc(var(--u) * 24); height: calc(var(--u) * 24); image-rendering: pixelated; }
+.carte .nom { font-size: var(--t-texte); color: var(--jeu-fort); }
+.carte .nom kbd { margin-right: calc(var(--u) * 3); }
+.carte .geste { color: var(--jeu-encre); }
+.carte.choisi { border-color: var(--jeu-accent); }
+.carte.fait .nom { color: var(--jeu-encre); }
+.carte.fait .geste { font-style: italic; }
+
+.fiche { left: calc(var(--u) * 508); top: calc(var(--u) * 44); width: calc(var(--u) * 124); min-height: calc(var(--u) * 100); padding: calc(var(--u) * 6); background: var(--jeu-panneau); font-size: var(--t-petit); }
+.fiche h3 { margin: 0 0 calc(var(--u) * 4); font-size: var(--t-texte); font-weight: normal; color: var(--jeu-fort); }
+.fiche p { margin: 0 0 calc(var(--u) * 3); }
+.fiche .pv { color: var(--jeu-braise); font-family: var(--mono); letter-spacing: .1em; }
+.fiche .issue { color: var(--jeu-accent); }
+
+.pied { left: calc(var(--u) * 8); right: calc(var(--u) * 8); top: calc(var(--u) * 314); height: calc(var(--u) * 40); display: grid; grid-template-columns: calc(var(--u) * 124) minmax(0, 1fr) calc(var(--u) * 124); gap: calc(var(--u) * 8); align-items: center; }
+.pied .bouton { height: calc(var(--u) * 28); min-height: 0; padding: 0 calc(var(--u) * 4); font-size: var(--t-petit); }
+.message { margin: 0; text-align: center; font-size: var(--t-texte); color: var(--jeu-fort); min-height: 1.25em; }
+.message.refus { color: var(--jeu-braise); }
+
+/* ─── Boutons, icônes ─────────────────────────────────────────────────────── */
+.icone { display: grid; place-items: center; width: var(--jeu-cible); height: var(--jeu-cible); padding: 0; background: none; border: 0; color: var(--jeu-encre); cursor: pointer; }
+.icone svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.bouton {
+  min-height: var(--jeu-cible); padding: 0 calc(var(--pas) * 2);
+  background: var(--jeu-encre); color: var(--jeu-fond);
+  border: 0; border-bottom: 4px solid var(--jeu-terre);
+  font: inherit; font-size: 16px; cursor: pointer;
+}
+.bouton.fort { background: var(--jeu-fort); }
+.bouton kbd { color: var(--jeu-sang); }
+.bouton:focus-visible, .icone:focus-visible, .carte:focus-visible { outline: 2px solid var(--jeu-accent); outline-offset: 2px; }
+@media (hover: hover) {
+  .bouton:hover { background: var(--jeu-accent); }
+  .carte:hover { border-color: var(--jeu-terre); }
+  .carte.choisi:hover { border-color: var(--jeu-accent); }
+}
+
+/* ─── Écran titre ─────────────────────────────────────────────────────────── */
+.titre {
+  position: absolute; inset: 0;
+  display: grid; place-content: center; justify-items: center; gap: calc(var(--pas) * 4);
+  background: var(--jeu-fond);
+}
+.titre[hidden] { display: none; }
+.titre h1 { margin: 0; font-size: clamp(32px, 9vmin, 80px); font-weight: normal; letter-spacing: .06em; color: var(--jeu-fort); text-align: center; }
+.titre-menu, .menu { display: grid; gap: var(--pas); min-width: min(260px, 80vw); }
+.titre-reglages { position: absolute; top: calc(var(--pas) + env(safe-area-inset-top, 0px)); right: var(--pas); }
+.frise { display: flex; gap: 0; align-items: flex-end; }
+.frise canvas { image-rendering: pixelated; }
+.record { margin: 0; font-size: 15px; color: var(--jeu-encre); }
+
+/* ─── Dialogues ───────────────────────────────────────────────────────────── */
+dialog {
+  background: var(--jeu-fond); color: var(--jeu-encre);
+  border: 2px solid var(--jeu-encre); padding: calc(var(--pas) * 3);
+  max-width: min(420px, 92vw);
+}
+dialog::backdrop { background: none; }   /* pas de voile translucide : aucune teinte hors palette */
+dialog h2 { margin: 0 0 calc(var(--pas) * 2); font-size: 20px; font-weight: normal; color: var(--jeu-fort); }
+dialog hr { border: 0; border-top: 1px solid var(--jeu-terre); margin: calc(var(--pas) * 2) 0; }
+.curseur { display: grid; grid-template-columns: 7em 1fr; align-items: center; min-height: var(--jeu-cible); }
+.curseur input { accent-color: var(--jeu-accent); }
+.version { margin: 0; }
+details { margin: var(--pas) 0 calc(var(--pas) * 2); }
+summary { min-height: var(--jeu-cible); display: flex; align-items: center; cursor: pointer; }
+#changelog h3 { font-size: 14px; margin: var(--pas) 0 0; }
+#changelog ul { margin: 4px 0; padding-left: 1.2em; font-size: 14px; }
+.liens { font-size: 14px; }
+.liens a { color: inherit; display: inline-block; min-height: var(--jeu-cible); line-height: var(--jeu-cible); }
+dialog form { margin-top: calc(var(--pas) * 2); }
+.bilan-chiffres { font-family: var(--mono); font-size: 16px; }
+.memento { font-style: italic; color: var(--jeu-accent); }
+#dialogue-bilan .menu { margin-top: calc(var(--pas) * 2); }
+
+@media (prefers-reduced-motion: reduce) { :root { --duree: 0ms; } }
